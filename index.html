@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digigenie | 3D Creative Portfolio</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Outfit', 'sans-serif']
+          },
+          colors: {
+            brand: '#9fff00',
+            dark: '#111111',
+            surface: '#FFFFFF',
+            base: '#F4F4F0'
+          }
+        }
+      }
+    }
+  </script>
+
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/framer-motion@11.1.7/dist/framer-motion.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="bg-base text-dark antialiased">
+  
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+    const { motion, useScroll, useTransform, useSpring, useMotionValue } = window.Motion;
+
+    /* =================================================================
+       GRAVITY (MAGNETIC) & 3D COMPONENTS
+       ================================================================= */
+    
+    const Magnet = ({ children, padding = 100, strength = 0.4, className = '' }) => {
+      const ref = useRef(null);
+      const [position, setPosition] = useState({ x: 0, y: 0 });
+
+      const handleMouse = (e) => {
+        const { clientX, clientY } = e;
+        const { height, width, left, top } = ref.current.getBoundingClientRect();
+        const middleX = clientX - (left + width / 2);
+        const middleY = clientY - (top + height / 2);
+        setPosition({ x: middleX * strength, y: middleY * strength });
+      };
+
+      const reset = () => setPosition({ x: 0, y: 0 });
+
+      return (
+        <motion.div
+          ref={ref}
+          className={className}
+          onMouseMove={handleMouse}
+          onMouseLeave={reset}
+          animate={{ x: position.x, y: position.y }}
+          transition={{ type: "spring", stiffness: 150, damping: 15, mass: 0.1 }}
+        >
+          {children}
+        </motion.div>
+      );
+    };
+
+    const TiltCard = ({ children, className }) => {
+      const x = useMotionValue(0);
+      const y = useMotionValue(0);
+      const mouseXSpring = useSpring(x);
+      const mouseYSpring = useSpring(y);
+      const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["7.5deg", "-7.5deg"]);
+      const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-7.5deg", "7.5deg"]);
+
+      const handleMouseMove = (e) => {
+        const rect = e.target.getBoundingClientRect();
+        const width = rect.width;
+        const height = rect.height;
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+        const xPct = mouseX / width - 0.5;
+        const yPct = mouseY / height - 0.5;
+        x.set(xPct);
+        y.set(yPct);
+      };
+
+      const handleMouseLeave = () => { x.set(0); y.set(0); };
+
+      return (
+        <motion.div
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
+          style={{ rotateY, rotateX, transformStyle: "preserve-3d" }}
+          className={`relative ${className}`}
+        >
+          {children}
+        </motion.div>
+      );
+    };
+
+    const FadeIn = ({ children, delay = 0, y = 40, className = "" }) => (
+      <motion.div
+        className={className}
+        initial={{ opacity: 0, y }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-50px" }}
+        transition={{ duration: 0.8, delay, ease: [0.16, 1, 0.3, 1] }}
+      >
+        {children}
+      </motion.div>
+    );
+
+    /* =================================================================
+       CONTACT PAGE
+       ================================================================= */
+    const ContactPage = ({ onBack }) => {
+      const myWhatsAppNumber = "918360187994"; 
+      const myDisplayNumber = "+91 83601 87994"; 
+      const myEmail = "digigenie13@gmail.com"; 
+
+      return (
+        <div className="min-h-screen bg-base flex flex-col items-center justify-center relative p-5 overflow-hidden">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-brand/20 blur-[120px] rounded-full pointer-events-none"></div>
+
+          <button onClick={onBack} className="absolute top-8 left-6 sm:left-10 text-sm uppercase tracking-widest text-dark/80 hover:text-dark transition-colors z-20 flex items-center gap-2 font-semibold">
+            ← Back to Portfolio
+          </button>
+
+          <FadeIn>
+            <h1 className="font-display font-black uppercase text-center mb-16 text-dark" style={{ fontSize: 'clamp(3rem, 8vw, 80px)' }}>
+              Let's Chat
+            </h1>
+          </FadeIn>
+
+          <div className="flex flex-col md:flex-row gap-8 w-full max-w-4xl z-10">
+            <Magnet className="flex-1">
+              <TiltCard className="h-full">
+                <a href={`https://wa.me/${myWhatsAppNumber}`} target="_blank" className="flex flex-col items-center justify-center h-full gap-4 p-12 rounded-[30px] glass-panel border border-black/5 hover:border-[#25D366]/50 hover:shadow-[0_10px_40px_rgba(37,211,102,0.15)] transition-all group">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="#25D366" viewBox="0 0 16 16" className="group-hover:scale-110 transition-transform"><path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/></svg>
+                  <span className="text-xl md:text-2xl font-bold text-dark">{myDisplayNumber}</span>
+                  <span className="text-[#25D366] text-xs uppercase tracking-widest font-semibold">WhatsApp</span>
+                </a>
+              </TiltCard>
+            </Magnet>
+
+            <Magnet className="flex-1">
+              <TiltCard className="h-full">
+                <a href={`mailto:${myEmail}`} className="flex flex-col items-center justify-center h-full gap-4 p-12 rounded-[30px] glass-panel border border-black/5 hover:border-[#EA4335]/50 hover:shadow-[0_10px_40px_rgba(234,67,53,0.15)] transition-all group">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="#EA4335" viewBox="0 0 16 16" className="group-hover:scale-110 transition-transform"><path d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555ZM0 4.697v7.104l5.803-3.558L0 4.697ZM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757Zm3.436-.586L16 11.801V4.697l-5.803 3.546Z"/></svg>
+                  <span className="text-lg md:text-xl font-bold break-all text-dark">{myEmail}</span>
+                  <span className="text-[#EA4335] text-xs uppercase tracking-widest font-semibold">Email</span>
+                </a>
+              </TiltCard>
+            </Magnet>
+          </div>
+        </div>
+      );
+    };
+
+    /* =================================================================
+       PAGE SECTIONS
+       ================================================================= */
+    const HeroSection = ({ onContactClick }) => (
+      <section className="min-h-screen flex flex-col relative overflow-hidden bg-base">
+        <div className="absolute top-[-10%] left-[-5%] w-[500px] h-[500px] bg-brand/20 blur-[150px] rounded-full pointer-events-none"></div>
+
+        <nav className="flex justify-between items-center px-8 pt-8 z-20 w-full max-w-7xl mx-auto">
+          <div className="font-display font-bold text-xl tracking-tighter text-dark">DIGIGENIE.</div>
+          <div className="hidden md:flex gap-8 text-sm uppercase tracking-widest font-semibold">
+            <a href="#about" className="text-dark/80 hover:text-dark transition-colors">About</a>
+            <a href="#projects" className="text-dark/80 hover:text-dark transition-colors">Projects</a>
+            <a href="#" onClick={(e) => { e.preventDefault(); onContactClick(); }} className="text-dark/80 hover:text-dark transition-colors">Contact</a>
+          </div>
+        </nav>
+
+        <div className="flex-1 flex flex-col md:flex-row items-center justify-between px-8 lg:px-20 z-10 max-w-7xl mx-auto w-full">
+          {/* Left Text Side */}
+          <div className="flex-1 flex flex-col justify-center mt-20 md:mt-0 relative z-20">
+            <FadeIn delay={0.2}>
+            </FadeIn>
+            <FadeIn delay={0.4}>
+              <h1 className="font-display font-black leading-[0.9] tracking-tighter uppercase text-dark" style={{ fontSize: 'clamp(4rem, 10vw, 130px)' }}>
+                We Build<br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-dark to-dark/50">The Future.</span>
+              </h1>
+            </FadeIn>
+            
+            <div className="mt-12 flex items-center gap-6">
+              <FadeIn delay={0.6}>
+                <Magnet>
+                  <button onClick={onContactClick} className="bg-dark text-white hover:bg-brand hover:text-dark px-8 py-4 rounded-full font-bold uppercase tracking-widest shadow-xl hover:scale-105 transition-all duration-300">
+                    Start Project
+                  </button>
+                </Magnet>
+              </FadeIn>
+            </div>
+          </div>
+
+          {/* Right Video Side */}
+          <FadeIn delay={0.5} className="flex-1 flex justify-center items-center mt-16 md:mt-0 relative z-10">
+            <Magnet strength={0.2}>
+              <motion.div 
+                animate={{ y: [-10, 10, -10] }}
+                transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
+                className="relative rounded-[40px] overflow-hidden border border-black/5 shadow-2xl group w-[300px] sm:w-[400px] md:w-[450px] aspect-square bg-white"
+              >
+                <video 
+                  autoPlay 
+                  loop 
+                  muted 
+                  playsInline 
+                  className="w-full h-full object-cover pointer-events-none"
+                >
+                  <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260603_132049_036591b8-6e92-4760-b94c-a7ea6eef315c.mp4" type="video/mp4" />
+                </video>
+              </motion.div>
+            </Magnet>
+          </FadeIn>
+        </div>
+      </section>
+    );
+
+    const ServicesSection = () => {
+      const services = [
+        { num: "01", name: "Website Development", desc: "Professional websites tailored to your brand." },
+        { num: "02", name: "Mobile App Development", desc: "User-friendly apps with smooth performance." },
+        { num: "03", name: "UI/UX Design", desc: "Interfaces designed for engaging experiences." },
+        { num: "04", name: "Software Development", desc: "Custom software tailored to your specific goals." },
+      ];
+
+      return (
+        <section className="py-32 px-8 lg:px-20 bg-surface relative z-10 border-t border-black/5 rounded-t-[40px]">
+          <FadeIn>
+            <h2 className="font-display font-black uppercase text-center mb-20 text-black" style={{ fontSize: 'clamp(3rem, 8vw, 100px)' }}>Our Services</h2>
+          </FadeIn>
+          <div className="grid md:grid-cols-2 gap-8 max-w-7xl mx-auto">
+            {services.map((svc, i) => (
+              <FadeIn key={svc.num} delay={i * 0.1}>
+                <TiltCard>
+                  <div className="bg-base p-10 rounded-[30px] h-full group hover:bg-brand/10 border border-transparent hover:border-brand/30 transition-all duration-300 shadow-sm">
+                    <span className="text-black font-display font-black text-5xl mb-6 block transition-colors">{svc.num}</span>
+                    <h3 className="font-display font-bold text-2xl mb-4 uppercase text-black">{svc.name}</h3>
+                    <p className="text-black font-medium text-lg leading-relaxed">{svc.desc}</p>
+                  </div>
+                </TiltCard>
+              </FadeIn>
+            ))}
+          </div>
+        </section>
+      );
+    };
+
+    const ProjectsSection = () => {
+      const projects = [
+        { num: "01", category: "Client", name: "Nextlevel Studio", img1: "https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260412_055344_5eff02e0-87a5-41ce-b64f-eb08da8f33db.png&w=1280&q=85", img2: "https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260412_055451_e317bf2d-28d4-48cc-86b0-6f72f25b6327.png&w=1280&q=85" },
+        { num: "02", category: "Personal", name: "Aura Brand Identity", img1: "https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260412_055654_911201c5-36d9-4bc6-bac7-331adfce159f.png&w=1280&q=85", img2: "https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260412_055753_adc5dcbd-a8e6-49c0-b43a-9b030d835cea.png&w=1280&q=85" },
+        { num: "03", category: "Client", name: "Solaris Digital", img1: "https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260412_055759_963cfb0b-4bd1-4b0f-9d0a-09bd6cf95b2f.png&w=1280&q=85", img2: "https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260412_055818_9d062121-ad7e-46b9-999a-1a6a692ef1ee.png&w=1280&q=85" }
+      ];
+
+      return (
+        <section id="projects" className="bg-base py-32 px-5 lg:px-10 relative z-20">
+          <FadeIn>
+            <h2 className="font-display font-black uppercase text-center mb-20 text-black" style={{ fontSize: 'clamp(3rem, 8vw, 100px)' }}>Projects</h2>
+          </FadeIn>
+          <div className="max-w-7xl mx-auto flex flex-col gap-10 pb-40">
+            {projects.map((proj, i) => (
+              <div key={proj.num} className="sticky w-full glass-panel rounded-[40px] p-8 flex flex-col gap-8 shadow-xl" style={{ top: `${80 + (i * 30)}px` }}>
+                <div className="flex justify-between items-center border-b border-black/10 pb-6">
+                  <div className="flex items-center gap-6">
+                    <span className="font-display font-black text-black text-5xl md:text-7xl">{proj.num}</span>
+                    <div>
+                      <span className="text-black font-semibold text-xs uppercase tracking-widest">{proj.category}</span>
+                      <h3 className="font-display font-bold text-2xl md:text-4xl uppercase mt-1 text-black">{proj.name}</h3>
+                    </div>
+                  </div>
+                  <Magnet>
+                    <button className="hidden md:block rounded-full border border-black/20 px-6 py-3 text-sm font-semibold uppercase tracking-widest text-black hover:bg-black hover:text-white transition-colors">
+                      View Live
+                    </button>
+                  </Magnet>
+                </div>
+                <div className="flex flex-col md:flex-row gap-6 h-[400px] md:h-[500px]">
+                  <div className="w-full md:w-[40%] h-full overflow-hidden rounded-[20px] shadow-inner">
+                    <img src={proj.img1} className="w-full h-full object-cover hover-img-zoom" alt="View 1" />
+                  </div>
+                  <div className="w-full md:w-[60%] h-full overflow-hidden rounded-[20px] shadow-inner">
+                    <img src={proj.img2} className="w-full h-full object-cover hover-img-zoom" alt="Main View" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      );
+    };
+
+    const AboutSection = () => (
+      <section id="about" className="py-32 px-8 lg:px-20 bg-surface border-t border-black/5 rounded-t-[40px] relative overflow-hidden">
+        <div className="max-w-4xl mx-auto relative z-10 text-center">
+          <FadeIn>
+            <h2 className="font-display font-black uppercase mb-12 text-black" style={{ fontSize: 'clamp(2.5rem, 6vw, 80px)' }}>About Digigenie</h2>
+          </FadeIn>
+          
+          {/* PURE BLACK AND FULL VISIBILITY TEXT */}
+          <div className="space-y-8 text-lg md:text-xl text-black leading-relaxed font-medium">
+            <FadeIn delay={0.1}>
+              <p className="text-black">
+                Welcome to <strong className="text-black font-bold">Digigenie</strong> where ideas are transformed into powerful digital solutions. We are a passionate team of developers, designers, and technology enthusiasts dedicated to building high-quality websites and mobile applications.
+              </p>
+            </FadeIn>
+            <FadeIn delay={0.2}>
+              <p className="text-black">
+                We believe that every business is unique, and therefore every solution should be tailored to meet specific goals and requirements. Our focus is on delivering reliable, scalable, and modern solutions that help our clients grow and succeed in the digital world.
+              </p>
+            </FadeIn>
+            
+            <div className="grid md:grid-cols-2 gap-12 mt-16 text-left border-t border-black/20 pt-16">
+              <FadeIn delay={0.3}>
+                <h4 className="font-display font-bold text-2xl mb-4 text-black">Our Vision</h4>
+                <p className="text-base text-black font-medium">To become a trusted technology partner for businesses worldwide by delivering innovative and impactful digital solutions.</p>
+              </FadeIn>
+              <FadeIn delay={0.4}>
+                <h4 className="font-display font-bold text-2xl mb-4 text-black">Our Mission</h4>
+                <p className="text-base text-black font-medium">To create high-quality websites and applications that help businesses connect with their customers, improve efficiency, and achieve long-term success.</p>
+              </FadeIn>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+
+    /* =================================================================
+       NEW FOOTER / CONTACT SECTION
+       ================================================================= */
+    const FooterSection = () => (
+      <footer className="bg-base py-20 px-8 lg:px-20 border-t border-black/10">
+        <div className="max-w-4xl mx-auto flex flex-col items-center text-center">
+          <FadeIn>
+            <h3 className="font-display font-black text-4xl md:text-5xl mb-8 text-black uppercase">Contact Us</h3>
+          </FadeIn>
+          <FadeIn delay={0.1}>
+            <div className="flex flex-col md:flex-row gap-6 md:gap-12 text-lg md:text-xl font-bold text-black mb-12">
+              <a href="tel:+918360187994" className="hover:text-brand transition-colors">+91 83601 87994</a>
+              <a href="tel:+918899626298" className="hover:text-brand transition-colors">+91 88996 26298</a>
+              <a href="mailto:digigenie13@gmail.com" className="hover:text-brand transition-colors">digigenie13@gmail.com</a>
+            </div>
+          </FadeIn>
+          <FadeIn delay={0.2}>
+            <p className="text-sm text-black/60 font-semibold uppercase tracking-widest border-t border-black/10 pt-8 w-full max-w-md mx-auto">
+              Designed by Gursimar Singh
+            </p>
+          </FadeIn>
+        </div>
+      </footer>
+    );
+
+    /* =================================================================
+       3D CHAT BOX
+       ================================================================= */
+    const ChatBox = () => {
+      const [isOpen, setIsOpen] = useState(false);
+      const [name, setName] = useState("");
+      const [phone, setPhone] = useState("");
+      const [msg, setMsg] = useState("");
+
+      const handleSendWhatsApp = () => {
+        if (!name.trim() || !msg.trim()) {
+          alert("Please enter at least your Name and Message.");
+          return;
+        }
+        const whatsappNumber = "918360187994";
+        const text = `Hello Digigenie,%0A%0A*Name:* ${encodeURIComponent(name)}%0A*Phone:* ${encodeURIComponent(phone)}%0A*Message:* ${encodeURIComponent(msg)}`;
+        window.open(`https://wa.me/${whatsappNumber}?text=${text}`, '_blank');
+        setName(""); setPhone(""); setMsg("");
+        setIsOpen(false);
+      };
+
+      return (
+        <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+          <motion.div
+            initial={false}
+            animate={isOpen ? "open" : "closed"}
+            variants={{
+              open: { opacity: 1, scale: 1, y: 0, pointerEvents: "auto", transition: { type: "spring", stiffness: 200, damping: 20 } },
+              closed: { opacity: 0, scale: 0.8, y: 20, pointerEvents: "none" }
+            }}
+            className="mb-4 w-[90vw] sm:w-96 rounded-[30px] p-6 sm:p-8 glass-panel origin-bottom-right shadow-2xl border border-black/5 bg-white/90 backdrop-blur-xl"
+          >
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="font-display text-xl font-bold uppercase tracking-wider flex items-center gap-2 text-black">
+                <span className="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
+                Quick Connect
+              </h3>
+              <button onClick={() => setIsOpen(false)} className="text-black/40 hover:text-black text-2xl">&times;</button>
+            </div>
+            <form className="flex flex-col gap-4 relative z-10">
+              <input 
+                type="text" 
+                placeholder="Your Name" 
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="bg-white/80 text-black placeholder-black/50 border border-black/20 rounded-xl px-4 py-3.5 outline-none focus:border-black focus:ring-2 focus:ring-black/10 transition-all text-sm font-medium" 
+              />
+              <input 
+                type="tel" 
+                placeholder="Mobile Number" 
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                className="bg-white/80 text-black placeholder-black/50 border border-black/20 rounded-xl px-4 py-3.5 outline-none focus:border-black focus:ring-2 focus:ring-black/10 transition-all text-sm font-medium" 
+              />
+              <textarea 
+                placeholder="How can I help you?" 
+                rows="3" 
+                value={msg}
+                onChange={(e) => setMsg(e.target.value)}
+                className="bg-white/80 text-black placeholder-black/50 border border-black/20 rounded-xl px-4 py-3.5 outline-none focus:border-black focus:ring-2 focus:ring-black/10 transition-all text-sm font-medium resize-none"
+              ></textarea>
+              
+              <button 
+                type="button" 
+                onClick={handleSendWhatsApp}
+                className="mt-2 bg-black text-white rounded-xl px-6 py-3.5 text-sm font-bold uppercase tracking-widest hover:scale-105 transition-all"
+              >
+                Send Message
+              </button>
+            </form>
+          </motion.div>
+
+          <Magnet strength={0.2}>
+            <button 
+              onClick={() => setIsOpen(!isOpen)}
+              className="w-16 h-16 rounded-full flex items-center justify-center bg-black text-white shadow-2xl hover:scale-110 transition-all"
+            >
+              {isOpen ? (
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/></svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path d="M8 15c4.418 0 8-3.134 8-7s-3.582-7-8-7-8 3.134-8 7c0 1.76.743 3.37 1.97 4.6-.097 1.016-.417 2.13-.771 2.966-.079.186.074.394.273.362 2.256-.37 3.597-.938 4.18-1.234A9.06 9.06 0 0 0 8 15z"/></svg>
+              )}
+            </button>
+          </Magnet>
+        </div>
+      );
+    };
+
+    /* =================================================================
+       APP CONTAINER
+       ================================================================= */
+    const App = () => {
+      const [showContactPage, setShowContactPage] = useState(false);
+
+      if (showContactPage) {
+        return <ContactPage onBack={() => setShowContactPage(false)} />;
+      }
+
+      return (
+        <div className="font-sans">
+          <HeroSection onContactClick={() => setShowContactPage(true)} />
+          <ServicesSection />
+          <ProjectsSection />
+          <AboutSection />
+          <FooterSection />
+          <ChatBox />
+        </div>
+      );
+    };
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
