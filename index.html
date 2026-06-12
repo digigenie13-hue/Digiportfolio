@@ -170,7 +170,7 @@
     };
 
     /* =================================================================
-       PAGE SECTIONS
+       ORIGINAL HERO SECTION (Restored)
        ================================================================= */
     const HeroSection = ({ onContactClick }) => (
       <section className="min-h-screen flex flex-col relative overflow-hidden bg-base">
@@ -180,6 +180,7 @@
           <div className="font-display font-bold text-xl tracking-tighter text-dark">DIGIGENIE.</div>
           <div className="hidden md:flex gap-8 text-sm uppercase tracking-widest font-semibold">
             <a href="#about" className="text-dark/80 hover:text-dark transition-colors">About</a>
+            <a href="#services" className="text-dark/80 hover:text-dark transition-colors">Services</a>
             <a href="#projects" className="text-dark/80 hover:text-dark transition-colors">Projects</a>
             <a href="#" onClick={(e) => { e.preventDefault(); onContactClick(); }} className="text-dark/80 hover:text-dark transition-colors">Contact</a>
           </div>
@@ -188,8 +189,6 @@
         <div className="flex-1 flex flex-col md:flex-row items-center justify-between px-8 lg:px-20 z-10 max-w-7xl mx-auto w-full">
           {/* Left Text Side */}
           <div className="flex-1 flex flex-col justify-center mt-20 md:mt-0 relative z-20">
-            <FadeIn delay={0.2}>
-            </FadeIn>
             <FadeIn delay={0.4}>
               <h1 className="font-display font-black leading-[0.9] tracking-tighter uppercase text-dark" style={{ fontSize: 'clamp(4rem, 10vw, 130px)' }}>
                 We Build<br />
@@ -232,36 +231,84 @@
       </section>
     );
 
-    const ServicesSection = () => {
-      const services = [
-        { num: "01", name: "Website Development", desc: "Professional websites tailored to your brand." },
-        { num: "02", name: "Mobile App Development", desc: "User-friendly apps with smooth performance." },
-        { num: "03", name: "UI/UX Design", desc: "Interfaces designed for engaging experiences." },
-        { num: "04", name: "Software Development", desc: "Custom software tailored to your specific goals." },
+    /* =================================================================
+       NEW MODERN ABOUT & SERVICES SECTION
+       ================================================================= */
+    const ModernAboutSection = () => {
+      const offerings = [
+        "Custom Website Design & Development",
+        "Responsive Mobile-Friendly Websites",
+        "Landing Pages",
+        "Portfolio Websites",
+        "Website Maintenance & Support",
+        "UI/UX Improvements",
+        "Fast Loading & Modern Designs"
       ];
 
       return (
-        <section className="py-32 px-8 lg:px-20 bg-surface relative z-10 border-t border-black/5 rounded-t-[40px]">
-          <FadeIn>
-            <h2 className="font-display font-black uppercase text-center mb-20 text-black" style={{ fontSize: 'clamp(3rem, 8vw, 100px)' }}>Our Services</h2>
-          </FadeIn>
-          <div className="grid md:grid-cols-2 gap-8 max-w-7xl mx-auto">
-            {services.map((svc, i) => (
-              <FadeIn key={svc.num} delay={i * 0.1}>
-                <TiltCard>
-                  <div className="bg-base p-10 rounded-[30px] h-full group hover:bg-brand/10 border border-transparent hover:border-brand/30 transition-all duration-300 shadow-sm">
-                    <span className="text-black font-display font-black text-5xl mb-6 block transition-colors">{svc.num}</span>
-                    <h3 className="font-display font-bold text-2xl mb-4 uppercase text-black">{svc.name}</h3>
-                    <p className="text-black font-medium text-lg leading-relaxed">{svc.desc}</p>
-                  </div>
-                </TiltCard>
+        <section id="about" className="py-32 px-5 lg:px-20 bg-surface border-t border-black/5 rounded-t-[40px] relative overflow-hidden">
+          <div className="max-w-6xl mx-auto relative z-10">
+            
+            {/* Introduction Part */}
+            <div className="mb-24 text-center md:text-left flex flex-col md:flex-row gap-12 items-center">
+              <div className="flex-1">
+                <FadeIn>
+                  <h2 className="font-display font-black text-4xl md:text-6xl text-dark mb-6 leading-tight">
+                     HI, I'M GURSIMAR SINGH
+                    <h2>WEB DESIGNER & DEVELOPER</h2>
+                  </h2>
+                </FadeIn>
+                <FadeIn delay={0.2}>
+                  <p className="text-lg md:text-xl text-dark/80 font-medium leading-relaxed">
+                    Passionate about helping businesses establish a strong online presence. I specialize in creating modern, responsive, and user-friendly websites that look great on all devices. Whether you need a business website, portfolio, landing page, restaurant website, or a complete redesign, I can help turn your ideas into reality.
+                  </p>
+                </FadeIn>
+              </div>
+            </div>
+
+            {/* Offerings Tags Part */}
+            <div id="services" className="mb-24">
+              <FadeIn>
+                <h3 className="font-display font-black uppercase text-2xl md:text-3xl mb-8 text-center text-dark tracking-wide">
+                  What I Offer
+                </h3>
               </FadeIn>
-            ))}
+              <div className="flex flex-wrap justify-center gap-4 md:gap-6">
+                {offerings.map((item, i) => (
+                  <FadeIn key={i} delay={i * 0.1}>
+                    <Magnet strength={0.2}>
+                      <TiltCard>
+                        <div className="bg-base px-6 py-4 md:px-8 md:py-5 rounded-2xl border border-black/5 hover:border-brand/50 hover:bg-brand/10 transition-colors shadow-sm flex items-center justify-center text-center cursor-default h-full">
+                          <span className="font-display font-bold text-md md:text-lg text-dark">{item}</span>
+                        </div>
+                      </TiltCard>
+                    </Magnet>
+                  </FadeIn>
+                ))}
+              </div>
+            </div>
+
+            {/* Goal Banner Part */}
+            <FadeIn delay={0.3}>
+              <TiltCard>
+                <div className="bg-dark rounded-[40px] p-10 md:p-16 text-center shadow-2xl relative overflow-hidden group">
+                  <div className="absolute top-[-50%] left-[-10%] w-[400px] h-[400px] bg-brand/30 blur-[120px] rounded-full pointer-events-none group-hover:bg-brand/50 transition-colors duration-700"></div>
+                  <h3 className="font-display font-black text-3xl md:text-5xl text-white mb-6 uppercase tracking-tight relative z-10">My Goal Is Simple</h3>
+                  <p className="text-white/80 text-lg md:text-2xl font-medium leading-relaxed max-w-4xl mx-auto relative z-10">
+                    Create websites that not only look great but also help your business grow. I focus on delivering clean, professional websites that help businesses attract more customers and build credibility online.
+                  </p>
+                </div>
+              </TiltCard>
+            </FadeIn>
+
           </div>
         </section>
       );
     };
 
+    /* =================================================================
+       PROJECTS SECTION
+       ================================================================= */
     const ProjectsSection = () => {
       const projects = [
         { num: "01", category: "Client", name: "Nextlevel Studio", img1: "https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260412_055344_5eff02e0-87a5-41ce-b64f-eb08da8f33db.png&w=1280&q=85", img2: "https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260412_055451_e317bf2d-28d4-48cc-86b0-6f72f25b6327.png&w=1280&q=85" },
@@ -276,7 +323,7 @@
           </FadeIn>
           <div className="max-w-7xl mx-auto flex flex-col gap-10 pb-40">
             {projects.map((proj, i) => (
-              <div key={proj.num} className="sticky w-full glass-panel rounded-[40px] p-8 flex flex-col gap-8 shadow-xl" style={{ top: `${80 + (i * 30)}px` }}>
+              <div key={proj.num} className="sticky w-full glass-panel bg-white rounded-[40px] p-8 flex flex-col gap-8 shadow-xl" style={{ top: `${80 + (i * 30)}px` }}>
                 <div className="flex justify-between items-center border-b border-black/10 pb-6">
                   <div className="flex items-center gap-6">
                     <span className="font-display font-black text-black text-5xl md:text-7xl">{proj.num}</span>
@@ -293,10 +340,10 @@
                 </div>
                 <div className="flex flex-col md:flex-row gap-6 h-[400px] md:h-[500px]">
                   <div className="w-full md:w-[40%] h-full overflow-hidden rounded-[20px] shadow-inner">
-                    <img src={proj.img1} className="w-full h-full object-cover hover-img-zoom" alt="View 1" />
+                    <img src={proj.img1} className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" alt="View 1" />
                   </div>
                   <div className="w-full md:w-[60%] h-full overflow-hidden rounded-[20px] shadow-inner">
-                    <img src={proj.img2} className="w-full h-full object-cover hover-img-zoom" alt="Main View" />
+                    <img src={proj.img2} className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" alt="Main View" />
                   </div>
                 </div>
               </div>
@@ -306,49 +353,14 @@
       );
     };
 
-    const AboutSection = () => (
-      <section id="about" className="py-32 px-8 lg:px-20 bg-surface border-t border-black/5 rounded-t-[40px] relative overflow-hidden">
-        <div className="max-w-4xl mx-auto relative z-10 text-center">
-          <FadeIn>
-            <h2 className="font-display font-black uppercase mb-12 text-black" style={{ fontSize: 'clamp(2.5rem, 6vw, 80px)' }}>About Digigenie</h2>
-          </FadeIn>
-          
-          {/* PURE BLACK AND FULL VISIBILITY TEXT */}
-          <div className="space-y-8 text-lg md:text-xl text-black leading-relaxed font-medium">
-            <FadeIn delay={0.1}>
-              <p className="text-black">
-                Welcome to <strong className="text-black font-bold">Digigenie</strong> where ideas are transformed into powerful digital solutions. We are a passionate team of developers, designers, and technology enthusiasts dedicated to building high-quality websites and mobile applications.
-              </p>
-            </FadeIn>
-            <FadeIn delay={0.2}>
-              <p className="text-black">
-                We believe that every business is unique, and therefore every solution should be tailored to meet specific goals and requirements. Our focus is on delivering reliable, scalable, and modern solutions that help our clients grow and succeed in the digital world.
-              </p>
-            </FadeIn>
-            
-            <div className="grid md:grid-cols-2 gap-12 mt-16 text-left border-t border-black/20 pt-16">
-              <FadeIn delay={0.3}>
-                <h4 className="font-display font-bold text-2xl mb-4 text-black">Our Vision</h4>
-                <p className="text-base text-black font-medium">To become a trusted technology partner for businesses worldwide by delivering innovative and impactful digital solutions.</p>
-              </FadeIn>
-              <FadeIn delay={0.4}>
-                <h4 className="font-display font-bold text-2xl mb-4 text-black">Our Mission</h4>
-                <p className="text-base text-black font-medium">To create high-quality websites and applications that help businesses connect with their customers, improve efficiency, and achieve long-term success.</p>
-              </FadeIn>
-            </div>
-          </div>
-        </div>
-      </section>
-    );
-
     /* =================================================================
-       NEW FOOTER / CONTACT SECTION
+       FOOTER SECTION
        ================================================================= */
     const FooterSection = () => (
-      <footer className="bg-base py-20 px-8 lg:px-20 border-t border-black/10">
+      <footer className="bg-surface py-20 px-8 lg:px-20 border-t border-black/10 rounded-t-[40px] relative z-30">
         <div className="max-w-4xl mx-auto flex flex-col items-center text-center">
           <FadeIn>
-            <h3 className="font-display font-black text-4xl md:text-5xl mb-8 text-black uppercase">Contact Us</h3>
+            <h3 className="font-display font-black text-4xl md:text-5xl mb-8 text-black uppercase">Contact Me</h3>
           </FadeIn>
           <FadeIn delay={0.1}>
             <div className="flex flex-col md:flex-row gap-6 md:gap-12 text-lg md:text-xl font-bold text-black mb-12">
@@ -381,7 +393,7 @@
           return;
         }
         const whatsappNumber = "918360187994";
-        const text = `Hello Digigenie,%0A%0A*Name:* ${encodeURIComponent(name)}%0A*Phone:* ${encodeURIComponent(phone)}%0A*Message:* ${encodeURIComponent(msg)}`;
+        const text = `Hello,%0A%0A*Name:* ${encodeURIComponent(name)}%0A*Phone:* ${encodeURIComponent(phone)}%0A*Message:* ${encodeURIComponent(msg)}`;
         window.open(`https://wa.me/${whatsappNumber}?text=${text}`, '_blank');
         setName(""); setPhone(""); setMsg("");
         setIsOpen(false);
@@ -396,7 +408,7 @@
               open: { opacity: 1, scale: 1, y: 0, pointerEvents: "auto", transition: { type: "spring", stiffness: 200, damping: 20 } },
               closed: { opacity: 0, scale: 0.8, y: 20, pointerEvents: "none" }
             }}
-            className="mb-4 w-[90vw] sm:w-96 rounded-[30px] p-6 sm:p-8 glass-panel origin-bottom-right shadow-2xl border border-black/5 bg-white/90 backdrop-blur-xl"
+            className="mb-4 w-[90vw] sm:w-96 rounded-[30px] p-6 sm:p-8 glass-panel origin-bottom-right shadow-2xl border border-black/5 bg-white/95 backdrop-blur-xl"
           >
             <div className="flex justify-between items-center mb-6">
               <h3 className="font-display text-xl font-bold uppercase tracking-wider flex items-center gap-2 text-black">
@@ -411,27 +423,27 @@
                 placeholder="Your Name" 
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="bg-white/80 text-black placeholder-black/50 border border-black/20 rounded-xl px-4 py-3.5 outline-none focus:border-black focus:ring-2 focus:ring-black/10 transition-all text-sm font-medium" 
+                className="bg-base text-black placeholder-black/50 border border-black/10 rounded-xl px-4 py-3.5 outline-none focus:border-brand focus:ring-2 focus:ring-brand/30 transition-all text-sm font-medium" 
               />
               <input 
                 type="tel" 
                 placeholder="Mobile Number" 
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                className="bg-white/80 text-black placeholder-black/50 border border-black/20 rounded-xl px-4 py-3.5 outline-none focus:border-black focus:ring-2 focus:ring-black/10 transition-all text-sm font-medium" 
+                className="bg-base text-black placeholder-black/50 border border-black/10 rounded-xl px-4 py-3.5 outline-none focus:border-brand focus:ring-2 focus:ring-brand/30 transition-all text-sm font-medium" 
               />
               <textarea 
                 placeholder="How can I help you?" 
                 rows="3" 
                 value={msg}
                 onChange={(e) => setMsg(e.target.value)}
-                className="bg-white/80 text-black placeholder-black/50 border border-black/20 rounded-xl px-4 py-3.5 outline-none focus:border-black focus:ring-2 focus:ring-black/10 transition-all text-sm font-medium resize-none"
+                className="bg-base text-black placeholder-black/50 border border-black/10 rounded-xl px-4 py-3.5 outline-none focus:border-brand focus:ring-2 focus:ring-brand/30 transition-all text-sm font-medium resize-none"
               ></textarea>
               
               <button 
                 type="button" 
                 onClick={handleSendWhatsApp}
-                className="mt-2 bg-black text-white rounded-xl px-6 py-3.5 text-sm font-bold uppercase tracking-widest hover:scale-105 transition-all"
+                className="mt-2 bg-dark text-white rounded-xl px-6 py-3.5 text-sm font-bold uppercase tracking-widest hover:scale-105 hover:bg-brand hover:text-dark transition-all"
               >
                 Send Message
               </button>
@@ -441,7 +453,7 @@
           <Magnet strength={0.2}>
             <button 
               onClick={() => setIsOpen(!isOpen)}
-              className="w-16 h-16 rounded-full flex items-center justify-center bg-black text-white shadow-2xl hover:scale-110 transition-all"
+              className="w-16 h-16 rounded-full flex items-center justify-center bg-dark text-white shadow-2xl hover:scale-110 hover:bg-brand hover:text-dark transition-all"
             >
               {isOpen ? (
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/></svg>
@@ -467,9 +479,8 @@
       return (
         <div className="font-sans">
           <HeroSection onContactClick={() => setShowContactPage(true)} />
-          <ServicesSection />
+          <ModernAboutSection />
           <ProjectsSection />
-          <AboutSection />
           <FooterSection />
           <ChatBox />
         </div>
